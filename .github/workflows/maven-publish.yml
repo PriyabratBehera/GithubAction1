@@ -1,0 +1,50 @@
+name: Floatr Project
+on:
+  workflow_dispatch:
+    inputs:
+      DEVICE_TYPE:
+        description: 'Select the device type'
+        required: true
+        default: 'iOS'
+        type: choice
+        options:
+          - "Android"
+          - "iOS"
+          - "Both in parallel"
+      
+      TEST_TYPE:
+        description: 'Select the test type'
+        required: true
+        default: 'Smoke Test'
+        type: choice
+        options:
+          - "Smoke Test"
+          - "Regression Test"
+          - "Validation Test"
+
+      MODULE_NAME:
+        description: 'Select the test type'
+        required: true
+        default: 'Smoke Test'
+        type: choice
+        options:
+          - "Smoke Test"
+          - "Regression Test"
+          - "Validation Test"      
+      
+jobs:
+  test:
+    runs-on:
+      - self-hosted
+      
+    steps:
+        - name: Appium Tests
+          uses: actions/checkout@v3
+
+        - name: check variable
+          run: echo "DEVICE_TYPE is ${{ github.event.inputs.DEVICE_TYPE }}"
+
+        - name: run android 
+          run: mvn test -Dsurefire.suiteXmlFiles=/Users/litanbehera/Documents/floatr-app-automation/testng-android.xml -Dcucumber.filter.tags="@MutualFundRegression"
+
+
