@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="Suite" parallel="tests">
+        <test name="iPhone 14 Pro Max">
+            <parameter name="platformName" value="iOS"/>
+            <parameter name="deviceName" value="iPhone 15 Pro Max"/>
+            <parameter name="automationName" value="XCUITest"/>
+<!--           <parameter name="udid" value="943E6A5B-51D7-4C0C-9EC5-6201CF108E95"/>-->
+             <parameter name="udid" value="D9D500C8-4B97-4343-93E4-9D6FCE14C507"/>
+            <parameter name="environment" value="TEST"/>
+            <parameter name="mobileNumber" value="8412398012"/>
+            <classes>
+                <class name="com.qa.runners.iPhone14ProMax"/>
+            </classes>
+        </test>
+</suite>

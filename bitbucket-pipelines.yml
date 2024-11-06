@@ -1,0 +1,142 @@
+###############################################
+# File: bitbucket-pipelines.yml
+# Version: 1.0.0
+# Author: Litan
+# Date: July 1, 2023
+# Description: This yml file for test pipeline setup
+# Change Log:
+# - July 1, 2023: First test pipeline setup Android
+# - July 16, 2023: Updated pipeline for Set Goals module execution
+###############################################
+
+pipelines:
+  custom:
+    test:
+      - variables:
+          - name: DEVICE_TYPE
+            default: iOS
+            allowed-values:
+              - "Android"
+              - "iOS"
+              - "Both in parallel"
+
+          - name: TEST_TYPE
+            default: Smoke Test
+            allowed-values:
+              - "Smoke Test"
+              - "Regression Test"
+              - "Validation Test"
+
+          - name: MODULE_NAME
+            default: All
+            allowed-values:
+              - "All"
+              - "Budget"
+              - "Mutual Fund"
+              - "Gold/Silver"
+              - "Rainy Days"
+              - "Mission 1 Cr"
+              - "Financial Goals"
+              - "NPS Investment"
+
+          - name: BUILD_PIPELINE_NO
+      - step:
+          name: Appium Tests
+          runs-on:
+            - self.hosted
+            - macos
+          caches:
+            - maven
+          script:
+            - echo "Device Type is - "$DEVICE_TYPE
+            - echo "Test Type is - "$TEST_TYPE
+            - echo "Module name is - "$MODULE_NAME
+            - |
+              if [[ "$DEVICE_TYPE" == "Android" ]]; then
+                export TESTNG_XML_FILE="testng-android.xml"
+                curl -s -L -O -u "$BITBUCKET_USERNAME:$BITBUCKET_APP_PASSWORD" "https://api.bitbucket.org/2.0/repositories/floatrapp/mobileapp/downloads/pipe-"$BUILD_PIPELINE_NO"-app-release.apk"
+              elif [[ "$DEVICE_TYPE" == "iOS" ]]; then
+                export TESTNG_XML_FILE="testng-ios.xml"
+                curl -s -L -O -u "$BITBUCKET_USERNAME:$BITBUCKET_APP_PASSWORD" "https://api.bitbucket.org/2.0/repositories/floatrapp/mobileapp/downloads/pipe-"$BUILD_PIPELINE_NO"-floatr.zip"
+                unzip "pipe-"$BUILD_PIPELINE_NO"-floatr.zip"
+              elif [[ "$DEVICE_TYPE" == "Both in parallel" ]]; then
+                export TESTNG_XML_FILE="testng-parallel.xml"
+                curl -s -L -O -u "$BITBUCKET_USERNAME:$BITBUCKET_APP_PASSWORD" "https://api.bitbucket.org/2.0/repositories/floatrapp/mobileapp/downloads/pipe-"$BUILD_PIPELINE_NO"-app-release.apk"
+                curl -s -L -O -u "$BITBUCKET_USERNAME:$BITBUCKET_APP_PASSWORD" "https://api.bitbucket.org/2.0/repositories/floatrapp/mobileapp/downloads/pipe-"$BUILD_PIPELINE_NO"-floatr.zip"
+                unzip "pipe-"$BUILD_PIPELINE_NO"-floatr.zip"
+              else
+               echo "Invalid device type";
+               exit 1
+              fi
+            - |
+              if [[ "$TEST_TYPE" == "Smoke Test" ]] && [[ "$MODULE_NAME" == "All" ]]; then
+                export CUCUMBER_TAG="@Smoke"
+              elif [[ "$TEST_TYPE" == "Smoke Test" ]] && [[ "$MODULE_NAME" == "Create Budget" ]]; then
+                export CUCUMBER_TAG="@BudgetSmoke"
+              elif [[ "$TEST_TYPE" == "Smoke Test" ]] && [[ "$MODULE_NAME" == "Mutual Fund" ]]; then
+                export CUCUMBER_TAG="@MutualFundSmoke"
+              elif [[ "$TEST_TYPE" == "Smoke Test" ]] && [[ "$MODULE_NAME" == "Digital Gold" ]]; then
+                export CUCUMBER_TAG="@GoldSilverSmoke"
+              elif [[ "$TEST_TYPE" == "Smoke Test" ]] && [[ "$MODULE_NAME" == "Rainy Days" ]]; then
+                export CUCUMBER_TAG="@RainyDaysSmoke"
+              elif [[ "$TEST_TYPE" == "Smoke Test" ]] && [[ "$MODULE_NAME" == "Mission 1 Cr" ]]; then
+                export CUCUMBER_TAG="@Mission1CrSmoke"
+              elif [[ "$TEST_TYPE" == "Smoke Test" ]] && [[ "$MODULE_NAME" == "Set Goals" ]]; then
+                export CUCUMBER_TAG="@FinancialSmoke"
+              elif [[ "$TEST_TYPE" == "Smoke Test" ]] && [[ "$MODULE_NAME" == "NPS Investment" ]]; then
+                export CUCUMBER_TAG="@NPSSmoke"
+              elif [[ "$TEST_TYPE" == "Regression Test" ]] && [[ "$MODULE_NAME" == "All" ]]; then
+                export CUCUMBER_TAG="@Regression"
+              elif [[ "$TEST_TYPE" == "Regression Test" ]] && [[ "$MODULE_NAME" == "Create Budget" ]]; then
+                export CUCUMBER_TAG="@BudgetRegression"
+              elif [[ "$TEST_TYPE" == "Regression Test" ]] && [[ "$MODULE_NAME" == "Mutual Fund" ]]; then
+                export CUCUMBER_TAG="@MutualFundRegression"
+              elif [[ "$TEST_TYPE" == "Regression Test" ]] && [[ "$MODULE_NAME" == "Digital Gold" ]]; then
+                export CUCUMBER_TAG="@GoldSilverRegression"
+              elif [[ "$TEST_TYPE" == "Regression Test" ]] && [[ "$MODULE_NAME" == "Rainy Days" ]]; then
+                export CUCUMBER_TAG="@RainyDaysRegression"
+              elif [[ "$TEST_TYPE" == "Regression Test" ]] && [[ "$MODULE_NAME" == "Mission 1 Cr" ]]; then
+                export CUCUMBER_TAG="@Mission1CrRegression"
+              elif [[ "$TEST_TYPE" == "Regression Test" ]] && [[ "$MODULE_NAME" == "Set Goals" ]]; then
+                export CUCUMBER_TAG="@FinancialRegression"
+              elif [[ "$TEST_TYPE" == "Regression Test" ]] && [[ "$MODULE_NAME" == "NPS Investment" ]]; then
+                export CUCUMBER_TAG="@NPSRegression"
+              elif [[ "$TEST_TYPE" == "Validation Test" ]] && [[ "$MODULE_NAME" == "All" ]]; then
+                export CUCUMBER_TAG="@Validation"
+              elif [[ "$TEST_TYPE" == "Validation Test" ]] && [[ "$MODULE_NAME" == "Create Budget" ]]; then
+                export CUCUMBER_TAG="@BudgetValidation"
+              elif [[ "$TEST_TYPE" == "Validation Test" ]] && [[ "$MODULE_NAME" == "Mutual Fund" ]]; then
+                export CUCUMBER_TAG="@MutualFundValidation"
+              elif [[ "$TEST_TYPE" == "Validation Test" ]] && [[ "$MODULE_NAME" == "Digital Gold" ]]; then
+                export CUCUMBER_TAG="@GoldSilverValidation"
+              elif [[ "$TEST_TYPE" == "Validation Test" ]] && [[ "$MODULE_NAME" == "Rainy Days" ]]; then
+                export CUCUMBER_TAG="@RainyDaysValidation"
+              elif [[ "$TEST_TYPE" == "Validation Test" ]] && [[ "$MODULE_NAME" == "Mission 1 Cr" ]]; then
+                export CUCUMBER_TAG="@Mission1CrValidation"
+              elif [[ "$TEST_TYPE" == "Validation Test" ]] && [[ "$MODULE_NAME" == "Set Goals" ]]; then
+                export CUCUMBER_TAG="@FinancialValidation"
+              elif [[ "$TEST_TYPE" == "Validation Test" ]] && [[ "$MODULE_NAME" == "NPS Investment" ]]; then
+                export CUCUMBER_TAG="@NPSValidation"
+              else
+               echo "Invalid test type and module name";
+               exit 1             
+              fi
+            - echo "Starting appium test execution..."
+            - set +e
+            - echo "Maven command is - mvn test -Dsurefire.suiteXmlFiles="$TESTNG_XML_FILE" -Dcucumber.filter.tags="$CUCUMBER_TAG""
+            - mvn test -Dsurefire.suiteXmlFiles="$TESTNG_XML_FILE" -Dcucumber.filter.tags="$CUCUMBER_TAG" -DPipelineNumber="$BUILD_PIPELINE_NO" -DBitbucketBranch="$BITBUCKET_BRANCH";
+            - mvn clean:clean
+            - set -e
+            - echo "Publishing artifacts..."
+            - rm -rf Android_Automation_Reports
+            - rm -rf iOS_Automation_Reports
+            - if [ -d target/iPhone14ProMax/cucumber-html-reports/cucumber-html-reports/ ]; then mkdir -p iOS_Automation_Reports/; fi
+            - if [ -d target/Pixel5/cucumber-html-reports/cucumber-html-reports/ ]; then mkdir -p Android_Automation_Reports/; fi
+            - if [ -d target/iPhone14ProMax/cucumber-html-reports/cucumber-html-reports/ ]; then mv target/iPhone14ProMax/cucumber-html-reports/cucumber-html-reports/ iOS_Automation_Reports/; fi
+            - if [ -d target/Pixel5/cucumber-html-reports/cucumber-html-reports/ ]; then mv target/Pixel5/cucumber-html-reports/cucumber-html-reports/ Android_Automation_Reports/; fi
+            - echo "Completed appium test execution..."
+          artifacts:
+            download: true
+            paths:
+              - iOS_Automation_Reports/**
+              - Android_Automation_Reports/**

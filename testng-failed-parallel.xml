@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="Suite" parallel="tests" thread-count="2">
+    <test name="FailedChrome" parallel="methods" thread-count="2">
+        <parameter name="platformName" value="Web"/>
+        <parameter name="applicationType" value="Admin"/>
+        <parameter name="browserType" value="Chrome"/>
+        <parameter name="environment" value="TEST"/>
+        <parameter name="mobileNumber" value="9191787807"/>
+        <classes>
+            <class name="com.qa.runners.FailedRunTest"/>
+        </classes>
+    </test>
+    <test name="FailedEdge" parallel="methods" thread-count="2">
+        <parameter name="platformName" value="Web"/>
+        <parameter name="applicationType" value="Admin"/>
+        <parameter name="browserType" value="Edge"/>
+        <parameter name="environment" value="TEST"/>
+        <parameter name="mobileNumber" value="9191787807"/>
+        <classes>
+            <class name="com.qa.runners.FailedRunTest"/>
+        </classes>
+    </test>
+</suite>
