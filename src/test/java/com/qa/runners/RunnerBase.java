@@ -17,8 +17,18 @@ public class RunnerBase {
 
     private static final ThreadLocal<TestNGCucumberRunner> testNGCucumberRunner = new ThreadLocal<>();
 
+    public static void initializeRunner() {
+        if (testNGCucumberRunner.get() == null) {
+            testNGCucumberRunner.set(new TestNGCucumberRunner(RunnerBase.class));
+        }
+    }
+
     public static TestNGCucumberRunner getRunner() {
+        if (testNGCucumberRunner.get() == null) {
+            initializeRunner();  // Ensure runner is initialized
+        }
         return testNGCucumberRunner.get();
+        // return testNGCucumberRunner.get();
     }
 
     private static void setRunner(TestNGCucumberRunner testNGCucumberRunner1) {
@@ -82,7 +92,12 @@ public class RunnerBase {
 
     @DataProvider
     public Object[][] scenarios() {
-        return getRunner().provideScenarios();
+        TestNGCucumberRunner runner = getRunner();
+        if (runner == null) {
+            throw new NullPointerException("TestNGCucumberRunner not initialized");
+        }
+        return runner.provideScenarios();
+        // return getRunner().provideScenarios();
     }
 
     @AfterClass(alwaysRun = true)
