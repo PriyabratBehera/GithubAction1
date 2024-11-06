@@ -43,9 +43,11 @@ public class CapabilitiesManager {
                     appArgs.put("appId", "com.floatr.personal");
                     appArgs.put("timeout", 0);
                     if(System.getProperty("PipelineNumber") == null){
+                        utils.log().info("appUrl is: manas");
                         androidAppUrl = System.getProperty("user.dir") + File.separator + "src" + File.separator + "test"
                                 + File.separator + "resources" + File.separator + "apps" + File.separator + "app-release-25.apk";
                     }else {
+                        utils.log().info("appUrl is: priyabrat");
                         androidAppUrl = System.getProperty("user.dir") + File.separator + "pipe-" + System.getProperty("PipelineNumber").trim() + "-app-release.apk";
                     }
                     utils.log().info("appUrl is: " + androidAppUrl);
